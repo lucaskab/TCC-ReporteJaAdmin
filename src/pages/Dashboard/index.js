@@ -24,6 +24,10 @@ const Dashboard = () => {
     navigate('Type');
   },[navigate]);
 
+  const navigateToProblems = useCallback(() => {
+    navigate('Problems');
+  },[navigate]);
+
   return (
     <Container>
       <Header>
@@ -53,7 +57,7 @@ const Dashboard = () => {
           </ActionInfo>
         </ActionsItem>
 
-        <ActionsItem onPress={() => {}}>
+        <ActionsItem onPress={navigateToProblems}>
           <ActionImage source={require('../../assets/logo.png')} />
           <ActionInfo>
             <ActionName>Dados Gerais</ActionName>
