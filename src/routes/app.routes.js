@@ -6,7 +6,8 @@ import Profile from '../pages/Profile';
 import Area from '../pages/Area';
 import Type from '../pages/Type';
 import Problems from '../pages/Problems';
-import ModalComponent from '../components/modal';
+import Charts from '../pages/Charts';
+import PieCharts from '../pages/PieCharts';
 
 const App = createStackNavigator();
 
@@ -21,6 +22,8 @@ const AppRoutes = () => (
     <App.Screen name="Area" component={Area} />
     <App.Screen name="Type" component={Type} />
     <App.Screen name="Problems" component={Problems} />
+    <App.Screen name="Charts" component={Charts} />
+    <App.Screen name="PieCharts" component={PieCharts} />
     
   </App.Navigator>
 );

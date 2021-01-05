@@ -1,32 +1,34 @@
-import React, { useCallback, useState, useRef } from 'react';
-import { View, Text, Alert, TouchableOpacity, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React, {useRef, useState, useCallback, useEffect} from 'react';
+import { View, Text, Dimensions, TouchableOpacity, Image, ScrollView, Alert} from 'react-native';
+import {
+  LineChart,
+  BarChart,
+  PieChart,
+  ProgressChart,
+  ContributionGraph,
+  StackedBarChart
+} from "react-native-chart-kit";
 import Modal from 'react-native-modal';
 import api from '../../services/api';
-
-import isAfter from 'date-fns'
-
+import {Picker} from '@react-native-picker/picker';
+import { useAuth } from '../../hooks/auth';
+import { useNavigation } from '@react-navigation/native';
 import { Form } from '@unform/mobile';
 
-import Input from '../../components/input';
+import {getMonth} from 'date-fns';
+
 import Button from '../../components/button';
+import Input from '../../components/input';
 
-import {Picker} from '@react-native-picker/picker';
-
-
-import { useAuth } from '../../hooks/auth';
-
-import { Container, Header, HeaderTitle, UserName, ProfileButton, ActionData, UserAvatar, FilterOptions, FilterContainer, Option, OptionContent, ActionsListContainer, ActionsListTitle, ActionsItem, ActionImage, ActionInfo, ActionName } from './styles';
-import { useEffect } from 'react/cjs/react.development';
+import { Container, ParametersContainer, ParametersInfo, FilterOptions, FilterContainer, Option, OptionContent, ActionsListContainer, ActionsListTitle, ActionsItem, ActionImage, ActionInfo, ActionName } from './styles';
 
 
-const Problems = () => {
+const PieCharts = () => {
   const filters = ['Área','Tipo','Data','Estado', 'Cidade', 'Status'];
   const status = ['Avaliando', 'Andamento', 'Finalizado'];
   const { user } = useAuth();
   const {navigate} = useNavigation();
   const formRef = useRef(null);
-  const secondDataInputRef = useRef(null);
 
   const [problems, setProblems] = useState([]);
 
@@ -41,53 +43,32 @@ const Problems = () => {
 
   const [firstData, setFirstData] = useState('');
   const [secondData, setSecondData] = useState('');
+  const [filterChartData, setFilterChartData] = useState([]);
+  const [filterChartQuantity, setFilterChartQuantity] = useState([]);
 
   const [selectedStatus, setSelectedStatus] = useState('');
 
   useEffect(() => {
-     api.post('/findAllAreas').then(response => {
-      setAllAreas(response.data);
-    });
-  },[]);
+    api.post('/findAllAreas').then(response => {
+     setAllAreas(response.data);
+   });
+   handleFilterChartData();
+ },[]);
 
-  async function handleTypes(area) {
-    const type = await api.post('/findAllTypes', {area});
-    setAllTypes(type.data);
-  }
+ async function handleFilterChartData() {
+  const areas = await api.get('/searchPieChartData');
+  setFilterChartData(areas.data);
+}
 
-  function handleData(data) {
-      setFirstData(data.inicialData);
-      setSecondData(data.finalData);
-  }
+ async function handleTypes(area) {
+   const type = await api.post('/findAllTypes', {area});
+   setAllTypes(type.data);
+ }
 
-  async function handleSearch() {
-    const data = {
-      area: selectedArea,
-      type: selectedType,
-      initialData: firstData,
-      endData: secondData,
-      status: selectedStatus,
-    };
-    
-    const problems = await api.post('/searchProblemsAdmin',data);
-    setProblems(problems.data);
-  }
-
-  const navigateToProfile = useCallback(() => {
-    navigate('Profile');
-  },[navigate]);
-
-  const navigateToArea = useCallback(() => {
-    navigate('Area');
-  },[navigate]);
-
-  const navigateToType = useCallback(() => {
-    navigate('Type');
-  },[navigate]);
-
-  const navigateToProblems = useCallback(() => {
-    navigate('Problems');
-  },[navigate]);
+ function handleData(data) {
+     setFirstData(data.inicialData);
+     setSecondData(data.finalData);
+ }
 
   function WrapperComponent({data}) {
     if(typeModal === 'Área'){
@@ -160,24 +141,20 @@ const Problems = () => {
                       autoCapitalize="none" 
                       keyboardType="email-address" 
                       name="inicialData" icon="mail" 
-                      placeholder="ex: 00/00/0000"
+                      placeholder="ex: 2020"
+                      returnKeyType="next"
+                      />
+                      <Input 
+                      autoCorrect={false} 
+                      autoCapitalize="none" 
+                      keyboardType="email-address" 
+                      name="finalData" icon="mail" 
+                      placeholder="ex: 2020"
                       returnKeyType="next"
                       onSubmitEditing={() => {
-                        secondDataInputRef.current?.focus();
-                      }}
-                      />
-                      <Input
-                      ref={secondDataInputRef} 
-                      name="finalData" 
-                      icon="lock" 
-                      placeholder="ex: 00/00/0000" 
-                      returnKeyType="send"
-                      onSubmitEditing={() => {
                         formRef.current?.submitForm();
-                        setModalOpened(false);
                       }}
-                      />
-                  
+                      />               
                       <Button onPress={() => {
                         formRef.current?.submitForm();
                         setModalOpened(false);
@@ -231,75 +208,36 @@ const Problems = () => {
         </View>
       )
     }
-    
   }
 
   return (
     <Container>
-      <Header>
-        <HeaderTitle>
-          Bem vindo, {"\n"}
-          <UserName>{user.name}</UserName>
-        </HeaderTitle>
-
-        <ProfileButton onPress={navigateToProfile}>
-          <UserAvatar source={require('../../assets/logo.png')}/>
-        </ProfileButton>
-      </Header>
-
       <ActionsListTitle>Filtros de buscas</ActionsListTitle>
 
-      <FilterContainer>
-        <FilterOptions horizontal={true} showsVerticalScrollIndicator={false} >
-          { filters.map((item) => {
-            return (<Option onPress={() => {
-              if(item === 'Área') {
-                setModalOpened(true);
-                setTypeModal('Área');
-              } else if (item === 'Tipo') {
-                handleTypes(selectedArea);
-                setModalOpened(true);
-                setTypeModal('Tipo');
-              }
-              else if (item === 'Data') {
-                setModalOpened(true);
-                setTypeModal('Data');
-              }
-              else if (item === 'Status') {
-                setModalOpened(true);
-                setTypeModal('Status');
-              }
-            }}><OptionContent>{item}</OptionContent></Option>)
-          })}
-        </FilterOptions>
-      </FilterContainer>
-      
-      <WrapperComponent data={modalOpened}/> 
-      <ActionsListContainer>
-      
-        <ActionsItem onPress={handleSearch}>
-          <ActionImage source={require('../../../assets/magnifier.png')} />
-          <ActionInfo>
-            <ActionName>Buscar</ActionName>
-          </ActionInfo>
-        </ActionsItem>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{marginHorizontal: 10, marginVertical: 10, maxHeight: 220}}>
+          <PieChart
+            data={filterChartData}
+            width={Dimensions.get("window").width} // from react-native
+            height={220}
+            accessor={"qtd"}
+            chartConfig={{
+              backgroundColor: "#ff9000",
+              backgroundGradientFrom: "black",
+              backgroundGradientTo: "black",
+              fillShadowGradient: '#ff9000', // bar color
+              fillShadowGradientOpacity: 1, // bar color opacity
+              decimalPlaces: 2, // optional, defaults to 2dp
+              color: () => '#ff9000', // tracejado
+              labelColor: () => '#ff9000', // label
+            }}
+            
+          />
+        </ScrollView>
+        <Button onPress={handleFilterChartData}>
+          Buscar dados
+        </Button>
+</Container>
+  )
+}
 
-        {problems.map((item) => {
-          return (
-            <ActionsItem onPress={handleSearch}>
-              <ActionImage source={require('../../assets/logo.png')} />
-              <ActionInfo>
-                <ActionData>{item.areaProblema}</ActionData>
-                <ActionData>{item.nomeProblema}</ActionData>
-                <ActionData>{item.status}</ActionData>
-              </ActionInfo>
-            </ActionsItem>
-          )
-        })}
-
-      </ActionsListContainer>
-    </Container>
-  );
-};
-
-export default Problems;
+export default PieCharts;

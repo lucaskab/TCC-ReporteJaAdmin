@@ -28,6 +28,13 @@ const Dashboard = () => {
     navigate('Problems');
   },[navigate]);
 
+  const navigateToCharts = useCallback(() => {
+    navigate('Charts');
+  },[navigate]);
+  const navigateToPieCharts = useCallback(() => {
+    navigate('PieCharts');
+  },[navigate]);
+
   return (
     <Container>
       <Header>
@@ -64,17 +71,19 @@ const Dashboard = () => {
           </ActionInfo>
         </ActionsItem>
 
-        <ActionsItem onPress={() => {}}>
+        <ActionsItem onPress={navigateToCharts}>
           <ActionImage source={require('../../assets/logo.png')} />
           <ActionInfo>
-            <ActionName>Dados específicos de sua área</ActionName>
+            <ActionName>
+              Gráficos por filtro
+            </ActionName>
           </ActionInfo>
         </ActionsItem>
 
-        <ActionsItem onPress={() => {}}>
+        <ActionsItem onPress={navigateToPieCharts}>
           <ActionImage source={require('../../assets/logo.png')} />
           <ActionInfo>
-            <ActionName>Dados específicos de sua área</ActionName>
+            <ActionName>Gráficos Estáticos</ActionName>
           </ActionInfo>
         </ActionsItem>
 

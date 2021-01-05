@@ -38,6 +38,19 @@ export const FilterOptions = styled.ScrollView`
   
 `;
 
+export const ParametersContainer = styled.View`
+  padding: 10px;
+  border-width: 2px;
+  border-color: #ff9000;
+  background: black;
+  margin: 10px;
+`;
+
+export const ParametersInfo = styled.Text`
+  font-size: 16px;
+  color: #ff9000;
+`;
+
 export const FilterContainer = styled.View`
   
   background: #28262e;
@@ -94,6 +107,7 @@ export const ActionData  = styled.Text`
 export const ActionsListTitle = styled.Text`
   font-size: 24px;
   margin-bottom: 24px;
+  margin-top: 48px;
   color: #ff9000;
   align-self: center;
 `;
