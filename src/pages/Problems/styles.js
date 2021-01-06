@@ -97,3 +97,16 @@ export const ActionsListTitle = styled.Text`
   color: #ff9000;
   align-self: center;
 `;
+
+export const ParametersContainer = styled.View`
+  padding: 10px;
+  border-width: 2px;
+  border-color: #ff9000;
+  background: black;
+  margin: 10px;
+`;
+
+export const ParametersInfo = styled.Text`
+  font-size: 16px;
+  color: #ff9000;
+`;

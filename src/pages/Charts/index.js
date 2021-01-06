@@ -38,6 +38,12 @@ const Charts = () => {
   const [allTypes, setAllTypes] = useState([]);
   const [selectedType, setSelectedType] = useState('');
 
+  const [allUF, setAllUF] = useState([]);
+  const [selectedUF, setSelectedUF] = useState('');
+
+  const [allCity, setAllCity] = useState([]);
+  const [selectedCity, setSelectedCity] = useState('');
+
   const [typeModal, setTypeModal] = useState('');
   const [modalOpened, setModalOpened] = useState(false);
 
@@ -66,6 +72,8 @@ const Charts = () => {
   const data = {
     area: selectedArea,
     type: selectedType,
+    uf: selectedUF,
+    city: selectedCity,
     initialData: firstData,
     finalData: secondData,
     status: selectedStatus,

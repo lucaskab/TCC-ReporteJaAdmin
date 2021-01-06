@@ -40,7 +40,7 @@ export const AuthProvider = ({children}) => {
     const user = response.data;
 
     await AsyncStorage.multiSet([
-      ['@GoBarber:user', JSON.stringify(user)],
+      ['@ReporteJa:user', JSON.stringify(user)],
     ]);
 
     setData({user});
@@ -54,6 +54,7 @@ export const AuthProvider = ({children}) => {
 
   const updateUser = useCallback(
     async (user) => {
+      console.log(user);
       await AsyncStorage.setItem('@ReporteJa:user', JSON.stringify(user));
       setData({
         user,

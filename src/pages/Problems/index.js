@@ -3,6 +3,7 @@ import { View, Text, Alert, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Modal from 'react-native-modal';
 import api from '../../services/api';
+import axios from 'axios';
 
 import isAfter from 'date-fns'
 
@@ -16,7 +17,7 @@ import {Picker} from '@react-native-picker/picker';
 
 import { useAuth } from '../../hooks/auth';
 
-import { Container, Header, HeaderTitle, UserName, ProfileButton, ActionData, UserAvatar, FilterOptions, FilterContainer, Option, OptionContent, ActionsListContainer, ActionsListTitle, ActionsItem, ActionImage, ActionInfo, ActionName } from './styles';
+import { Container, Header, HeaderTitle, UserName, ParametersContainer, ParametersInfo, ProfileButton, ActionData, UserAvatar, FilterOptions, FilterContainer, Option, OptionContent, ActionsListContainer, ActionsListTitle, ActionsItem, ActionImage, ActionInfo, ActionName } from './styles';
 import { useEffect } from 'react/cjs/react.development';
 
 
@@ -36,6 +37,13 @@ const Problems = () => {
   const [allTypes, setAllTypes] = useState([]);
   const [selectedType, setSelectedType] = useState('');
 
+  const [allStates, setAllStates] = useState([]);
+  const [allUF, setAllUF] = useState([]);
+  const [selectedUF, setSelectedUF] = useState('');
+
+  const [allCity, setAllCity] = useState([]);
+  const [selectedCity, setSelectedCity] = useState('');
+
   const [typeModal, setTypeModal] = useState('');
   const [modalOpened, setModalOpened] = useState(false);
 
@@ -50,9 +58,32 @@ const Problems = () => {
     });
   },[]);
 
+  useEffect(() => {
+    var stateArray = [];
+    var UFArray = [];
+     axios.get('https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome').then(response => {
+      response.data.map(problem => {
+        stateArray.push(problem.nome);
+        UFArray.push(problem.sigla);
+      });
+     setAllUF(UFArray);
+     setAllStates(stateArray);
+   });
+ },[]);
+
   async function handleTypes(area) {
     const type = await api.post('/findAllTypes', {area});
     setAllTypes(type.data);
+  }
+
+  async function handleCities(state, index) {
+    var citiesArray = [];
+    await axios.get(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${allUF[index-1]}/municipios?orderBy=nome`).then(response => {
+      response.data.map(city => {
+        citiesArray.push(city.nome);
+      });
+     setAllCity(citiesArray);
+    })
   }
 
   function handleData(data) {
@@ -64,6 +95,8 @@ const Problems = () => {
     const data = {
       area: selectedArea,
       type: selectedType,
+      uf: selectedUF,
+      city: selectedCity,
       initialData: firstData,
       endData: secondData,
       status: selectedStatus,
@@ -75,18 +108,6 @@ const Problems = () => {
 
   const navigateToProfile = useCallback(() => {
     navigate('Profile');
-  },[navigate]);
-
-  const navigateToArea = useCallback(() => {
-    navigate('Area');
-  },[navigate]);
-
-  const navigateToType = useCallback(() => {
-    navigate('Type');
-  },[navigate]);
-
-  const navigateToProblems = useCallback(() => {
-    navigate('Problems');
   },[navigate]);
 
   function WrapperComponent({data}) {
@@ -220,6 +241,66 @@ const Problems = () => {
         </View>
       )
     }
+
+    else if (typeModal === 'Estado') {
+      return (
+        <View>
+          <Modal isVisible={data}>
+            <View  style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <View style={{backgroundColor: '#ff9000', padding: 30, flexDirection: 'row'}}>
+                <View style={{ borderWidth: 4, borderColor: 'black'}}> 
+                  <Picker
+                    selectedValue={selectedUF}
+                    style={{height: 50, width: 280,}}
+                    onValueChange={(value, index) => {
+                      setSelectedUF(value);
+                      handleCities(value, index);
+                    } }>
+                    <Picker.Item key={-1} label={'Selecione uma opção'} value={''} />  
+                    {allStates.map((item, index) => {
+                    return (<Picker.Item key={index} label={item} value={item} />)
+                  })} 
+                  </Picker>
+                </View>
+                <TouchableOpacity style={{height: 38, position: 'relative', bottom: 28, right: -25, borderRadius: 14}} onPress={() => setModalOpened(false)}>
+                    <Image style={{width: 38, height: 38,marginBottom: 80}} source={require('../../../assets/remove.png')} />
+                </TouchableOpacity> 
+              </View>
+            </View>
+          </Modal>
+        </View>
+      )
+    }
+
+    else if (typeModal === 'Cidade') {
+      return (
+        <View>
+          <Modal isVisible={data}>
+            <View  style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <View style={{backgroundColor: '#ff9000', padding: 30, flexDirection: 'row'}}>
+                <View style={{ borderWidth: 4, borderColor: 'black'}}> 
+                  <Picker
+                    selectedValue={selectedCity}
+                    style={{height: 50, width: 280,}}
+                    onValueChange={value => {
+                      setSelectedCity(value);
+                    } }>
+                    <Picker.Item key={-1} label={'Selecione uma opção'} value={''} />  
+                    {allCity.map((item, index) => {
+                    return (<Picker.Item key={index} label={item} value={item} />)
+                  })} 
+                  </Picker>
+                </View>
+                <TouchableOpacity style={{height: 38, position: 'relative', bottom: 28, right: -25, borderRadius: 14}} onPress={() => setModalOpened(false)}>
+                    <Image style={{width: 38, height: 38,marginBottom: 80}} source={require('../../../assets/remove.png')} />
+                </TouchableOpacity> 
+              </View>
+            </View>
+          </Modal>
+        </View>
+      )
+    }
+
     else {
       return (
         <View>
@@ -254,25 +335,38 @@ const Problems = () => {
           { filters.map((item) => {
             return (<Option onPress={() => {
               if(item === 'Área') {
-                setModalOpened(true);
                 setTypeModal('Área');
               } else if (item === 'Tipo') {
                 handleTypes(selectedArea);
-                setModalOpened(true);
                 setTypeModal('Tipo');
               }
               else if (item === 'Data') {
-                setModalOpened(true);
                 setTypeModal('Data');
               }
               else if (item === 'Status') {
-                setModalOpened(true);
                 setTypeModal('Status');
               }
+              else if (item === 'Estado') {
+                setTypeModal('Estado');
+              }
+              else if (item === 'Cidade') {
+                setTypeModal('Cidade');
+              }
+
+              setModalOpened(true);
             }}><OptionContent>{item}</OptionContent></Option>)
           })}
         </FilterOptions>
       </FilterContainer>
+
+      <ParametersContainer>
+        {selectedArea ? <ParametersInfo>Área: {selectedArea}</ParametersInfo> : null }
+        {selectedType ? <ParametersInfo>Tipo: {selectedType}</ParametersInfo> : null }
+        {firstData ? <ParametersInfo>Data: {firstData} {secondData ? `e ${secondData}` : null }</ParametersInfo> : null }
+        {selectedUF ? <ParametersInfo>Estado: {selectedUF}</ParametersInfo> : null }
+        {selectedCity ? <ParametersInfo>Cidade: {selectedCity}</ParametersInfo> : null }
+        {selectedStatus ? <ParametersInfo>Status: {selectedStatus}</ParametersInfo> : null }
+      </ParametersContainer>
       
       <WrapperComponent data={modalOpened}/> 
       <ActionsListContainer>
@@ -286,7 +380,7 @@ const Problems = () => {
 
         {problems.map((item) => {
           return (
-            <ActionsItem onPress={handleSearch}>
+            <ActionsItem key={item._id} onPress={handleSearch}>
               <ActionImage source={require('../../assets/logo.png')} />
               <ActionInfo>
                 <ActionData>{item.areaProblema}</ActionData>

@@ -87,20 +87,6 @@ const Dashboard = () => {
           </ActionInfo>
         </ActionsItem>
 
-        <ActionsItem onPress={() => {}}>
-          <ActionImage source={require('../../assets/logo.png')} />
-          <ActionInfo>
-            <ActionName>Dados específicos de sua área</ActionName>
-          </ActionInfo>
-        </ActionsItem>
-
-        <ActionsItem onPress={() => {}}>
-          <ActionImage source={require('../../assets/logo.png')} />
-          <ActionInfo>
-            <ActionName>Dados específicos de sua área</ActionName>
-          </ActionInfo>
-        </ActionsItem>
-
       </ActionsListContainer>
     </Container>
   );
