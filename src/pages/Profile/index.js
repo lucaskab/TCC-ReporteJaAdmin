@@ -13,7 +13,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 import { Container, Title, BackButton, BackButtonText } from './styles';
 
-import logoImg from '../../assets/logo.png';
+import logoImg from '../../assets/imagem-do-usuario-com-fundo-preto.png';
 import { useCallback } from 'react/cjs/react.development';
 
 const Profile = () => {

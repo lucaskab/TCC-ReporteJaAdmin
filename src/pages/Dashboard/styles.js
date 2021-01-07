@@ -48,7 +48,8 @@ export const ActionsItem = styled(RectButton)`
 `;
 
 export const  ActionImage = styled.Image`
-  border-radius: 32px;
+  width: 50px;
+  height: 50px;
 `; 
 
 export const ActionInfo = styled.View`

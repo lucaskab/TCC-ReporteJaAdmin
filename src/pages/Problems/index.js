@@ -1,11 +1,9 @@
-import React, { useCallback, useState, useRef } from 'react';
-import { View, Text, Alert, TouchableOpacity, Image } from 'react-native';
+import React, { useCallback, useState, useRef, useEffect } from 'react';
+import { View, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Modal from 'react-native-modal';
 import api from '../../services/api';
 import axios from 'axios';
-
-import isAfter from 'date-fns'
 
 import { Form } from '@unform/mobile';
 
@@ -18,14 +16,14 @@ import {Picker} from '@react-native-picker/picker';
 import { useAuth } from '../../hooks/auth';
 
 import { Container, Header, HeaderTitle, UserName, ParametersContainer, ParametersInfo, ProfileButton, ActionData, UserAvatar, FilterOptions, FilterContainer, Option, OptionContent, ActionsListContainer, ActionsListTitle, ActionsItem, ActionImage, ActionInfo, ActionName } from './styles';
-import { useEffect } from 'react/cjs/react.development';
+
 
 
 const Problems = () => {
   const filters = ['Área','Tipo','Data','Estado', 'Cidade', 'Status'];
   const status = ['Avaliando', 'Andamento', 'Finalizado'];
   const { user } = useAuth();
-  const {navigate} = useNavigation();
+  const navigation = useNavigation();
   const formRef = useRef(null);
   const secondDataInputRef = useRef(null);
 
@@ -107,8 +105,12 @@ const Problems = () => {
   }
 
   const navigateToProfile = useCallback(() => {
-    navigate('Profile');
-  },[navigate]);
+    navigation.navigate('Profile');
+  },[navigation]);
+
+  function navigateToProblemInfo(item) {
+    navigation.navigate('ProblemInfo',item);
+  };
 
   function WrapperComponent({data}) {
     if(typeModal === 'Área'){
@@ -332,8 +334,8 @@ const Problems = () => {
 
       <FilterContainer>
         <FilterOptions horizontal={true} showsVerticalScrollIndicator={false} >
-          { filters.map((item) => {
-            return (<Option onPress={() => {
+          { filters.map((item, index) => {
+            return (<Option key={index} onPress={() => {
               if(item === 'Área') {
                 setTypeModal('Área');
               } else if (item === 'Tipo') {
@@ -380,7 +382,7 @@ const Problems = () => {
 
         {problems.map((item) => {
           return (
-            <ActionsItem key={item._id} onPress={handleSearch}>
+            <ActionsItem key={item._id} onPress={() => navigateToProblemInfo(item)}>
               <ActionImage source={require('../../assets/logo.png')} />
               <ActionInfo>
                 <ActionData>{item.areaProblema}</ActionData>

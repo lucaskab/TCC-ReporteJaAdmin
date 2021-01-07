@@ -83,7 +83,6 @@ export const ActionInfo = styled.View`
 export const ActionName  = styled.Text`
   font-size: 28px;
   color: #ff9000;
-  text-align: center;
 `;
 
 export const ActionData  = styled.Text`
