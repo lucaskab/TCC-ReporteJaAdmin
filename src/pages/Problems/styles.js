@@ -1,5 +1,5 @@
 import { RectButton } from 'react-native-gesture-handler';
-import styled from 'styled-components/native';
+import styled, {css} from 'styled-components/native';
 
 export const Container = styled.View`
   flex: 1;
@@ -58,7 +58,11 @@ export const OptionContent = styled.Text`
 `; 
 
 export const ActionsListContainer = styled.ScrollView`
-  padding: 32px 24px 50px;
+
+`;
+
+export const ActionsListView = styled.View`
+  padding: 24px;
 `;
 
 export const ActionsItem = styled(RectButton)`
@@ -73,7 +77,6 @@ export const ActionsItem = styled(RectButton)`
 export const  ActionImage = styled.Image`
   width: 50px;
   height: 50px;
-  border-radius: 20px;
 `; 
 
 export const ActionInfo = styled.View`
@@ -88,11 +91,23 @@ export const ActionName  = styled.Text`
 export const ActionData  = styled.Text`
   font-size: 18px;
   color: #ff9000;
+
+  ${props => props.status === 'Andamento' && css`
+    color:#FFCF48;
+  `}
+
+  ${props => props.status === 'Finalizado' && css`
+    color:#02CC69;
+  `}
+
+  ${props => props.status === 'Avaliando' && css`
+    color:#FF393A;
+  `}
 `;
 
 export const ActionsListTitle = styled.Text`
   font-size: 24px;
-  margin-bottom: 24px;
+  margin: 12px 0;
   color: #ff9000;
   align-self: center;
 `;

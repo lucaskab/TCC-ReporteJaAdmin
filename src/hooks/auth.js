@@ -54,7 +54,6 @@ export const AuthProvider = ({children}) => {
 
   const updateUser = useCallback(
     async (user) => {
-      console.log(user);
       await AsyncStorage.setItem('@ReporteJa:user', JSON.stringify(user));
       setData({
         user,

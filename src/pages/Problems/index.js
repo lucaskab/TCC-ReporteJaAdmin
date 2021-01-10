@@ -15,7 +15,7 @@ import {Picker} from '@react-native-picker/picker';
 
 import { useAuth } from '../../hooks/auth';
 
-import { Container, Header, HeaderTitle, UserName, ParametersContainer, ParametersInfo, ProfileButton, ActionData, UserAvatar, FilterOptions, FilterContainer, Option, OptionContent, ActionsListContainer, ActionsListTitle, ActionsItem, ActionImage, ActionInfo, ActionName } from './styles';
+import { Container, Header, HeaderTitle, UserName, ParametersContainer, ActionsListView, ParametersInfo, ProfileButton, ActionData, UserAvatar, FilterOptions, FilterContainer, Option, OptionContent, ActionsListContainer, ActionsListTitle, ActionsItem, ActionImage, ActionInfo, ActionName } from './styles';
 
 
 
@@ -321,12 +321,12 @@ const Problems = () => {
     <Container>
       <Header>
         <HeaderTitle>
-          Bem vindo, {"\n"}
+          Faça suas buscas, {"\n"}
           <UserName>{user.name}</UserName>
         </HeaderTitle>
 
         <ProfileButton onPress={navigateToProfile}>
-          <UserAvatar source={require('../../assets/logo.png')}/>
+          <UserAvatar source={require('../../assets/imagem-do-usuario-com-fundo-preto.png')}/>
         </ProfileButton>
       </Header>
 
@@ -360,7 +360,7 @@ const Problems = () => {
           })}
         </FilterOptions>
       </FilterContainer>
-
+      {selectedArea || selectedType || firstData || selectedUF || selectedCity || selectedStatus ? 
       <ParametersContainer>
         {selectedArea ? <ParametersInfo>Área: {selectedArea}</ParametersInfo> : null }
         {selectedType ? <ParametersInfo>Tipo: {selectedType}</ParametersInfo> : null }
@@ -368,31 +368,33 @@ const Problems = () => {
         {selectedUF ? <ParametersInfo>Estado: {selectedUF}</ParametersInfo> : null }
         {selectedCity ? <ParametersInfo>Cidade: {selectedCity}</ParametersInfo> : null }
         {selectedStatus ? <ParametersInfo>Status: {selectedStatus}</ParametersInfo> : null }
-      </ParametersContainer>
+      </ParametersContainer> : null }
       
       <WrapperComponent data={modalOpened}/> 
       <ActionsListContainer>
-      
-        <ActionsItem onPress={handleSearch}>
-          <ActionImage source={require('../../../assets/magnifier.png')} />
-          <ActionInfo>
-            <ActionName>Buscar</ActionName>
-          </ActionInfo>
-        </ActionsItem>
+        <ActionsListView>
+          <ActionsItem onPress={handleSearch}>
+            <ActionImage source={require('../../../assets/magnifier.png')} />
+            <ActionInfo>
+              <ActionName>Buscar</ActionName>
+            </ActionInfo>
+          </ActionsItem>
 
-        {problems.map((item) => {
-          return (
-            <ActionsItem key={item._id} onPress={() => navigateToProblemInfo(item)}>
-              <ActionImage source={require('../../assets/logo.png')} />
-              <ActionInfo>
-                <ActionData>{item.areaProblema}</ActionData>
-                <ActionData>{item.nomeProblema}</ActionData>
-                <ActionData>{item.status}</ActionData>
-              </ActionInfo>
-            </ActionsItem>
-          )
-        })}
+          {problems.map((item) => {
+            var photo = item.areaProblema.split(" ").join("_").split(",").join("");
 
+            return (
+              <ActionsItem key={item._id} onPress={() => navigateToProblemInfo(item)}>
+                <ActionImage source={{uri: `https://54aa1ee1839e.ngrok.io/files/${photo}.png`}} />
+                <ActionInfo>
+                  <ActionData>{item.areaProblema}</ActionData>
+                  <ActionData>{item.nomeProblema}</ActionData>
+                  <ActionData status={item.status}>{item.status}</ActionData>
+                </ActionInfo>
+              </ActionsItem>
+            )
+          })}
+        </ActionsListView>
       </ActionsListContainer>
     </Container>
   );

@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
-import {View, TouchableWithoutFeedback, TouchableOpacity} from 'react-native';
-import { Container, ActionData, ProblemItem, ActionImage, ActionInfo, ActionStatus, ActionTitle} from './styles';
+import {View, TouchableWithoutFeedback, TouchableOpacity, Image} from 'react-native';
+import { Container, ActionData, ProblemItem, ActionImage, ActionInfo, ActionStatus, ActionTitle, ContainerView, ProblemImage} from './styles';
 import MapView, {Marker} from 'react-native-maps';
 
 import Modal from 'react-native-modal';
@@ -8,9 +8,13 @@ import Modal from 'react-native-modal';
 const ProblemInfo = ({route}) => {
 const item = route.params;
 const [modalOpened, setModalOpened] = useState(false);
+const [imageModalOpened, setImageModalOpened] = useState(false);
+const [imageUri, setImageUri] = useState('');
 const [location, setLocation] = useState(item.posicao.coordinates);
 
+
 function WrapperComponent() {
+  var photo = item.areaProblema.split(" ").join("_").split(",").join("");
   return (
     <View>
       <Modal isVisible={modalOpened}>
@@ -30,7 +34,9 @@ function WrapperComponent() {
               latitude: location[1],
               longitude: location[0],
               }} 
-            />
+            >
+            <Image style={{width: 30, height: 30,}} source={{uri: `https://54aa1ee1839e.ngrok.io/files/${photo}.png`}} />
+            </Marker> 
             </MapView>
           </TouchableWithoutFeedback>
         </TouchableOpacity>
@@ -39,10 +45,25 @@ function WrapperComponent() {
   )
 }
 
+function ImageModal() {
+  return (
+    <View>
+      <Modal isVisible={imageModalOpened}>
+        <TouchableOpacity style={{ flex: 1, justifyContent: 'center'}} onPress={() => setImageModalOpened(false)}>
+          <TouchableWithoutFeedback style={{ flex: 0.2}} onPress={() => {}} >
+            <Image resizeMode="contain" style={{width: '100%', height: '50%'}} source={{uri: `https://54aa1ee1839e.ngrok.io/files/${imageUri}`}} />
+          </TouchableWithoutFeedback>
+        </TouchableOpacity>
+      </Modal>
+    </View>
+  )
+}
+
+
   return (
     <Container>
-      {!modalOpened ? 
-        <>
+      {!modalOpened || !imageModalOpened ? 
+        <ContainerView>
           <ProblemItem key={1} onPress={() => {}}>
             <ActionImage source={require('../../assets/problema.png')} />
             <ActionInfo>
@@ -106,16 +127,18 @@ function WrapperComponent() {
           </ActionInfo>
           </ProblemItem>
 
-          <ProblemItem style={{opacity: 0}} key={9} onPress={() => setModalOpened(true)}>
-          <ActionImage source={require('../../assets/logo.png')} />
-          <ActionInfo>
-            <ActionData>Ver localização no mapa</ActionData>
-          </ActionInfo>
+          <ProblemItem key={9} >
+          {item.urlFoto.map(uri => (
+            <ProblemImage onPress={() => {setImageModalOpened(true), setImageUri(uri)}}>
+              <ActionImage source={{uri: `https://54aa1ee1839e.ngrok.io/files/${uri}`}}></ActionImage>
+            </ProblemImage>
+          ))}
           </ProblemItem>
-        </>
+        </ContainerView>
       : null }
 
       <WrapperComponent />
+      <ImageModal />
 
     </Container>
   )

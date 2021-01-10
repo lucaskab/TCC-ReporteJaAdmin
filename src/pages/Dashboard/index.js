@@ -38,17 +38,18 @@ const Dashboard = () => {
   return (
     <Container>
       <Header>
-        <ProfileButton onPress={signOut}>
-          <UserAvatar source={require('../../assets/sair.png')}/>
-        </ProfileButton>
 
+        <ProfileButton onPress={navigateToProfile}>
+          <UserAvatar source={require('../../assets/imagem-do-usuario-com-fundo-preto.png')}/>
+        </ProfileButton>
+    
         <HeaderTitle>
           Bem vindo, {"\n"}
           <UserName>{user.name}</UserName>
         </HeaderTitle>
 
-        <ProfileButton onPress={navigateToProfile}>
-          <UserAvatar source={require('../../assets/imagem-do-usuario-com-fundo-preto.png')}/>
+        <ProfileButton onPress={signOut}>
+          <UserAvatar source={require('../../assets/sair.png')}/>
         </ProfileButton>
       </Header>
       <ActionsListContainer>

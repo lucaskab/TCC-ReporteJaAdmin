@@ -1,5 +1,5 @@
 import React, {useCallback, useRef, useEffect, useState} from 'react';
-import { Alert, ScrollView } from 'react-native';
+import { Alert, ScrollView, View } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 
 
@@ -66,14 +66,17 @@ const Type = () => {
        <Form ref={formRef} onSubmit={handleAddType}>
           <>
             <Title>Cadastrar Tipo</Title>
+            <View style={{borderWidth: 2, borderColor: 'black', marginBottom: 20, borderRadius: 10}}>
             <Picker
               selectedValue={addTypeArea}
-              style={{height: 50, width: 280}}
+              style={{height: 50, width: '100%'}}
               onValueChange={value => setAddTypeArea(value) }>
+              <Picker.Item key={-1} label={'Selecione uma área'} value={''} />
               {areas.map(item => {
               return (<Picker.Item key={item._id} label={item.name} value={item.name} />)
             })} 
             </Picker>
+            </View>
             <Input 
               autoCorrect={false} 
               autoCapitalize="none" 
@@ -95,31 +98,36 @@ const Type = () => {
             <Form ref={attFormRef} onSubmit={handleAttType}>
               <>
               <Title>Atualizar Tipo</Title>
-
+              <View style={{borderWidth: 2, borderColor: 'black', marginBottom: 20, borderRadius: 10}}>
               <Picker
                 selectedValue={attTypeArea}
-                style={{height: 50, width: 300}}
+                style={{height: 50, width: '100%'}}
                 onValueChange={(value) => {
                   setAttTypeArea(value); 
                   handleTypes(value);
                 }}
                 >
-                <Picker.Item key={-1} label={'Selecione uma opção'} value={'disabled'} />
+                <Picker.Item key={-1} label={'Selecione uma área'} value={''} />
                 {areas.map(item => {
                 return (<Picker.Item key={item._id} label={item.name} value={item.name} />)
                 })} 
               </Picker>
+              </View>
 
-              { areas && types ? (<Picker
-                selectedValue={attTypeNameArea}
-                style={{height: 50, width: 300}}
-                onValueChange={value => setAttTypeNameArea(value)}
-                >
-                <Picker.Item key={-1} label={'Selecione uma opção'} value={'disabled'} /> 
-                {types.map((item,index) => {
-                return (<Picker.Item key={item._id} label={item.name} value={item.name} />)
-                })} 
-              </Picker>) : null }
+              { areas && types ? (
+                <View style={{borderWidth: 2, borderColor: 'black', marginBottom: 20, borderRadius: 10}}>
+                  <Picker
+                    selectedValue={attTypeNameArea}
+                    style={{height: 50, width: '100%'}}
+                    onValueChange={value => setAttTypeNameArea(value)}
+                    >
+                    <Picker.Item key={-1} label={'Selecione um tipo'} value={''} /> 
+                    {types.map((item,index) => {
+                    return (<Picker.Item key={item._id} label={item.name} value={item.name} />)
+                    })} 
+                  </Picker>
+                </View>  
+              ) : null }
 
               <Input 
               autoCorrect={false} 
@@ -142,28 +150,32 @@ const Type = () => {
             <Form ref={deleteFormRef} onSubmit={handleDeleteType}>
               <>
               <Title>Deletar Tipo</Title>
-
-              <Picker
-                selectedValue={removeTypeArea}
-                style={{height: 50, width: 300}}
-                onValueChange={value => {setRemoveTypeArea(value); handleTypes(value)}
-                }>
-                <Picker.Item key={-1} label={'Selecione uma opção'} value={'disabled'} />   
-                {areas.map(item => {
-                return (<Picker.Item key={item._id} label={item.name} value={item.name} />)
-                })} 
-              </Picker>
-
-              { areas && types ? (<Picker
-                selectedValue={removeTypeNameArea}
-                style={{height: 50, width: 300}}
-                onValueChange={value => setRemoveTypeNameArea(value)}
-                >
-                <Picker.Item key={-1} label={'Selecione uma opção'} value={'disabled'} /> 
-                {types.map((item,index) => {
-                return (<Picker.Item key={item._id} label={item.name} value={item.name} />)
-                })} 
-              </Picker>) : null }
+              <View style={{borderWidth: 2, borderColor: 'black', marginBottom: 20, borderRadius: 10}}>
+                <Picker
+                  selectedValue={removeTypeArea}
+                  style={{height: 50, width: '100%'}}
+                  onValueChange={value => {setRemoveTypeArea(value); handleTypes(value)}
+                  }>
+                  <Picker.Item key={-1} label={'Selecione uma área'} value={'disabled'} />   
+                  {areas.map(item => {
+                  return (<Picker.Item key={item._id} label={item.name} value={item.name} />)
+                  })} 
+                </Picker>
+              </View>  
+              { areas && types ? (
+                <View style={{borderWidth: 2, borderColor: 'black', marginBottom: 20, borderRadius: 10}}> 
+                  <Picker
+                    selectedValue={removeTypeNameArea}
+                    style={{height: 50, width: '100%'}}
+                    onValueChange={value => setRemoveTypeNameArea(value)}
+                    >
+                    <Picker.Item key={-1} label={'Selecione um tipo'} value={'disabled'} /> 
+                    {types.map((item,index) => {
+                    return (<Picker.Item key={item._id} label={item.name} value={item.name} />)
+                    })} 
+                  </Picker>
+                </View> 
+              ) : null }
               
               <Button onPress={() => {
                   deleteFormRef.current?.submitForm();

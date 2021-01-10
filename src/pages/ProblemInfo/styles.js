@@ -2,8 +2,12 @@ import { RectButton } from 'react-native-gesture-handler';
 import styled, {css} from 'styled-components/native';
 
 export const Container = styled.ScrollView`
-  
-  padding: 80px 24px;
+  flex: 1;
+ 
+`;
+
+export const ContainerView = styled.View`
+   padding: 40px 24px;
 `;
 
 
@@ -24,6 +28,10 @@ export const  ActionImage = styled.Image`
 export const ActionInfo = styled.View`
   flex: 1;
   margin-left: 20px;
+`;
+
+export const ProblemImage = styled.TouchableOpacity`
+  padding: 7px;
 `;
 
 export const ActionData  = styled.Text`

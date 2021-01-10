@@ -279,6 +279,7 @@ const Charts = () => {
           })}
         </FilterOptions>
       </FilterContainer>
+      {selectedArea || selectedType || firstData || selectedUF || selectedCity || selectedStatus ? 
       <ParametersContainer>
         {selectedArea ? <ParametersInfo>Área: {selectedArea}</ParametersInfo> : null }
         {selectedType ? <ParametersInfo>Tipo: {selectedType}</ParametersInfo> : null }
@@ -287,6 +288,7 @@ const Charts = () => {
         {selectedArea ? <ParametersInfo>Cidade:{}</ParametersInfo> : null */}
         {selectedStatus ? <ParametersInfo>Status: {selectedStatus}</ParametersInfo> : null }
       </ParametersContainer>
+        : null}
     
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{marginHorizontal: 10, marginVertical: 10, maxHeight: 220}}>
           <BarChart
@@ -319,7 +321,7 @@ const Charts = () => {
           />
         </ScrollView>
         <ActionsListTitle>Quantidade total de problemas: {filterChartQuantity}</ActionsListTitle>
-        <Button onPress={handleFilterChartData}>
+        <Button style={{marginLeft: 30}} onPress={handleFilterChartData}>
           Buscar dados
         </Button>
 </Container>
